@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies Recaps Myanmar AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="hero">
+            <h1>🎬 Movies Recaps Myanmar AI</h1>
+            <p class="tagline">ရုပ်ရှင်/ဗီဒီယိုများကို မြန်မာဘာသာအကျဉ်းချုပ်နှင့် အသံအဖြစ်ပြောင်းလဲခြင်း</p>
+            <div class="server-status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">ဆာဗာချိတ်ဆက်နေသည်...</span>
+            </div>
+        </header>
+
+        <!-- Main Tabs -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="video-upload">🎥 ဗီဒီယိုတင်ရန်</button>
+            <button class="tab-btn" data-tab="text-input">📝 စာသားထည့်ရန်</button>
+            <button class="tab-btn" data-tab="history">🕐 မှတ်တမ်း</button>
+        </nav>
+
+        <!-- ==================== Tab: Video Upload ==================== -->
+        <section id="video-upload" class="tab-content active">
+            <div class="card">
+                <h2>ဗီဒီယိုဖိုင်တင်ပါ</h2>
+                
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="videoInput" accept="video/*" hidden>
+                    <div class="upload-content">
+                        <span class="upload-icon">📁</span>
+                        <p>ဗီဒီယိုဖိုင်ကို ဤနေရာသို့ ဆွဲထည့်ပါ သို့မဟုတ် နှိပ်ရွေးပါ</p>
+                        <span class="formats">ထောက်ပံ့သောဖော်မတ်- MP4, MOV, WebM • အများဆုံး 100MB</span>
+                    </div>
+                </div>
+
+                <div id="fileInfo" class="file-info hidden">
+                    <span class="file-icon">🎬</span>
+                    <div class="file-details">
+                        <p class="file-name" id="fileName"></p>
+                        <p class="file-size" id="fileSize"></p>
+                    </div>
+                    <button id="removeFile" class="remove-btn">✕</button>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="setting-group">
+                        <label>မူရင်းဘာသာစကား</label>
+                        <select id="sourceLang">
+                            <option value="auto">🔄 အလိုအလျောက် မှတ်မိခြင်း</option>
+                            <option value="zh">🇨🇳 တရုတ်</option>
+                            <option value="en">🇺🇸 အင်္ဂလိပ်</option>
+                            <option value="ja">🇯🇵 ဂျပန်</option>
+                            <option value="ko">🇰🇷 ကိုရီးယား</option>
+                            <option value="th">🇹🇭 ထိုင်း</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>ရလဒ်အမျိုးအစား</label>
+                        <select id="outputMode">
+                            <option value="subtitle">📄 စာတန်းသာ</option>
+                            <option value="summary">📝 အကျဉ်းချုပ် + စာတန်း</option>
+                            <option value="audio" selected>🔊 အားလုံး + မြန်မာအသံ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button id="startBtn" class="btn primary full-width" disabled>
+                    <span class="btn-icon">🚀</span> စတင်လုပ်ဆောင်မည်
+                </button>
+
+                <!-- Progress -->
+                <div id="progressSection" class="progress-section hidden">
+                    <div class="step-indicators">
+                        <div class="step" id="step1">
+                            <span class="step-num">1</span>
+                            <span class="step-label">အသံထုတ်ယူခြင်း</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" id="step2">
+                            <span class="step-num">2</span>
+                            <span class="step-label">စာသားဖော်ထုတ်ခြင်း</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" id="step3">
+                            <span class="step-num">3</span>
+                            <span class="step-label">ဘာသာပြန်ခြင်း</span>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" id="step4">
+                            <span class="step-num">4</span>
+                            <span class="step-label">အသံဖန်တီးခြင်း</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-percent" id="progressPercent">0%</p>
+                    </div>
+                    <p class="status-text" id="statusText">ဖိုင်ကို လက်ခံရရှိပါသည်...</p>
+                </div>
+
+                <!-- Result -->
+                <div id="resultSection" class="result-section hidden">
+                    <div class="result-tabs">
+                        <button class="result-tab active" data-tab="original">မူရင်းစာသား</button>
+                        <button class="result-tab" data-tab="subtitle">မြန်မာစာတန်း</button>
+                        <button class="result-tab" data-tab="summary">အကျဉ်းချုပ်</button>
+                        <button class="result-tab" data-tab="audio">အသံဖိုင်</button>
+                    </div>
+
+                    <div class="result-content active" id="res-original">
+                        <textarea readonly id="originalText" placeholder="မူရင်းစာသား..."></textarea>
+                        <button class="copy-btn" data-target="originalText">📋 ကူးယူရန်</button>
+                    </div>
+
+                    <div class="result-content" id="res-subtitle">
+                        <textarea readonly id="subtitleText" placeholder="မြန်မာစာတန်း..."></textarea>
+                        <div class="btn-group">
+                            <button class="copy-btn" data-target="subtitleText">📋 ကူးယူရန်</button>
+                            <button id="downloadSrt" class="btn secondary">⬇️ SRT ဒေါင်းလုဒ်</button>
+                        </div>
+                    </div>
+
+                    <div class="result-content" id="res-summary">
+                        <textarea readonly id="summaryText" placeholder="အကျဉ်းချုပ်..."></textarea>
+                        <button class="copy-btn" data-target="summaryText">📋 ကူးယူရန်</button>
+                    </div>
+
+                    <div class="result-content" id="res-audio">
+                        <div class="audio-player">
+                            <audio controls id="resultAudio">
+                                <source src="" type="audio/mpeg">
+                                သင့်ဘရောင်ဇာ အသံမဖွင့်နိုင်ပါ
+                            
+                        </div>
+                        <p class="audio-note">မြန်မာအသံကို နားထောင်နိုင်ပါပြီ။ ဒေါင်းလုဒ်လည်း ရယူနိုင်ပါတယ်။</p>
+                        <button id="downloadAudio" class="btn primary full-width">⬇️ MP3 အသံဖိုင် ဒေါင်းလုဒ်</button>
+                    </div>
+
+                    <button id="newVideo" class="btn text full-width">+ အခြားဗီဒီယိုအသစ်တင်မည်</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== Tab: Text Input ==================== -->
+        <section id="text-input" class="tab-content">
+            <div class="card">
+                <h2>စာသားကို မြန်မာအသံအဖြစ်ပြောင်းမည်</h2>
+                
+                <label>စာသားရိုက်ထည့်ပါ</label>
+                <textarea id="inputText" placeholder="ဤနေရာတွင် စာသားရိုက်ထည့်ပါ..."></textarea>
+                
+                <div class="voice-selector">
+                    <label>အသံရွေးချယ်ပါ</label>
+                    <div class="voice-options">
+                        <label class="voice-card">
+                            <input type="radio" name="voice" value="female" checked>
+                            <span class="voice-icon">👩</span>
+                            <span class="voice-name">မေသူဇာ</span>
+                            <span class="voice-desc">အမျိုးသမီးအသံ</span>
+                        </label>
+                        <label class="voice-card">
+                            <input type="radio" name="voice" value="male">
+                            <span class="voice-icon">🧑</span>
+                            <span class="voice-name">ထွန်းထွန်း</span>
+                            <span class="voice-desc">အမျိုးသားအသံ</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button id="ttsBtn" class="btn primary full-width">🔊 အသံဖန်တီးမည်</button>
+
+                <div id="ttsLoading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>အသံဖန်တီးနေသည်... ခဏစောင့်ပါ</p>
+                </div>
+
+                <div id="ttsResult" class="result-section hidden">
+                    <h3>✅ အသံအဆင်သင့်ဖြစ်ပါပြီ</h3>
+                    <audio controls id="ttsAudio">
+                        <source src="" type="audio/mpeg">
+                    
+                    <div class="btn-group">
+                        <button id="ttsDownload" class="btn secondary">⬇️ ဒေါင်းလုဒ်</button>
+                        <button id="ttsReset" class="btn text">အသစ်ဖန်တီးမည်</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== Tab: History ==================== -->
+        <section id="history" class="tab-content">
+            <div class="card">
+                <div class="history-header">
+                    <h2>ကျွန်ုပ်၏မှတ်တမ်း</h2>
+                    <button id="clearHistory" class="btn text small">အားလုံးဖျက်မည်</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <div class="empty-state">
+                        <span class="empty-icon">📭</span>
+                        <h3>မှတ်တမ်းမရှိသေးပါ</h3>
+                        <p>ပြောင်းလဲမှုများ ပြုလုပ်ပါက ဤနေရာတွင် ပေါ်လာမည်ဖြစ်ပါသည်</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>Backend API: <a href="https://my-backend-xrwt.onrender.com" target="_blank">my-backend-xrwt.onrender.com</a></p>
+            <p class="copyright">© 2026 Movies Recaps Myanmar AI</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
